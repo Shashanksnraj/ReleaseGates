@@ -45,11 +45,11 @@ In this lab we will create two **Web Apps** in Azure to depict two environments 
     
     ![VSTS Demo Generator](images/deployment_success.png)
 
-1. We will See web app and application insights being provisioned. Application insights is used to monitor the Wwb app. Click on **Application Insights**.
+1. We will See web app and application insights being provisioned. Application insights is used to monitor the Web app. Click on **Application Insights**.
     
     ![VSTS Demo Generator](images/select_ai.png)
 
-1. Note down the Instrumentation Key. Instrumentation key and use that to configure the SDK in the application.
+1. Note down the Instrumentation Key. Instrumentation key is used to configure the SDK in the application.
 
     ![VSTS Demo Generator](images/key.png)
 
@@ -235,7 +235,7 @@ As Deployment Gates feature is still in preview, we should enable this feature t
 
    ![VSTS Demo Generator](images/browse.png)
 
-1. When we click on **More**, we will encounter an error.
+1. When we click on **More**, we will encounter an error. Do this couple of times.
 
    ![VSTS Demo Generator](images/exception.png) 
    
