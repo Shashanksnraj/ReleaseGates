@@ -237,7 +237,7 @@ As Deployment Gates feature is still in preview, we should enable this feature t
 
 1. When we click on **More**, we will encounter an error. Do this couple of times for triggering alert.
 
-   >>This is just for the purpose of the lab and in real world, analysis of the alert and a resolution like “disabling a feature flag” or “upgrading the infra” would be realistic.
+   >>This error scenario just for the purpose of the lab and in real world, analysis of the alert and a resolution like “disabling a feature flag” or “upgrading the infra” would be realistic.
 
    ![VSTS Demo Generator](images/exception.png) 
    
