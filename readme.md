@@ -110,19 +110,7 @@ In this exercise we will update the code with instrumentation key generated in a
    
    ![](images/commit.png)
 
-## Exercise 3: Enable preview feature Deployment Gates.
-
-As Deployment Gates feature is still in preview, we should enable this feature to VSTS account.
-
-1. In VSTS, click on logged in user and click Preview Features.
-  
-   ![](images/enable_preview.png)
-
-1. We will see **Approval gates in releases**. Let us turn it On.
-
-   ![](images/rg_turnon.png)
-
-## Exercise 4: Configure Deployment Gate.
+## Exercise 3: Configure Deployment Gate.
 
 ### Enabling Pre-deployment Gate
 
@@ -235,7 +223,9 @@ As Deployment Gates feature is still in preview, we should enable this feature t
 
    ![VSTS Demo Generator](images/browse.png)
 
-1. When we click on **More**, we will encounter an error. Do this couple of times.
+1. When we click on **More**, we will encounter an error. Do this couple of times for triggering alert.
+
+   >This error scenario just for the purpose of the lab and in real world, analysis of the alert and a resolution like “disabling a feature flag” or “upgrading the infra” would be realistic.
 
    ![VSTS Demo Generator](images/exception.png) 
    
