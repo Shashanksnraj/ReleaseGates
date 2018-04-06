@@ -23,7 +23,7 @@ If there are any active bugs, deployment will not happen to Canary environment a
 
 1. **Microsoft Azure Account:** You will need a valid and active azure account for the lab.
 
-1. You will need a **Visual Studio Team Services Account**. If you do not have one, you can sign up for free here- https://www.visualstudio.com/products/visual-studio-team-services-vs
+1. You will need a **Visual Studio Team Services Account**. If you do not have one, you can sign up for free [here](https://www.visualstudio.com/team-services/)
 
 1. You will need a Personal Access Token (PAT) to set up your project using the Demo Generator.Please see this [article]((https://docs.microsoft.com/en-us/vsts/accounts/use-personal-access-tokens-to-authenticate)) for instructions to create your token.
 
@@ -53,7 +53,7 @@ In this lab we will create two **Web Apps** in Azure to depict two environments 
 
     ![VSTS Demo Generator](images/key.png)
 
-1. Scroll down and click on **Alerts**. Let us add an alert for server exceptions. 
+1. Scroll down and click on **Alerts (classic)**. Let us add an alert for server exceptions. 
     
     ![VSTS Demo Generator](images/select_alerts.png)
 
@@ -61,7 +61,7 @@ In this lab we will create two **Web Apps** in Azure to depict two environments 
 
     ![VSTS Demo Generator](images/add_alert.png)
 
-1. Provide **Name** and select **Server Exceptions** from the dropdown under metric, observe **Condition**, **Threshold** and **Period**,  and click **OK**.
+1. Provide **Name** and select **Server Exceptions** from the dropdown under **Metric**, observe **Condition**, **Threshold** and **Period**,  and click **OK**.
 
     ![VSTS Demo Generator](images/alert_details.png)
 
@@ -69,7 +69,9 @@ In this lab we will create two **Web Apps** in Azure to depict two environments 
 
 ## Setting up Team Services project
 
-1. Use [VSTS Demo Data Generator](https://vstsdemobuildertest.azurewebsites.net/) to provision the project in VSTS account.
+   > Note: Currenctly VSTS Demo Data Generator 2 URL has been used to create the project and later we have to update the screenshots for the same.- 5th Apr 2018
+
+1. Use [VSTS Demo Generator](https://demogen.azurewebsites.net/?TemplateId=77375&Name=ReleaseGates) to provision the project in VSTS account.
 
    ![VSTS Demo Generator](images/1.png)
 
@@ -79,8 +81,8 @@ In this lab we will create two **Web Apps** in Azure to depict two environments 
 
    ![VSTS Demo Generator](images/demogenerator-create.png)
 
-   >Note: This URL will automatically select Release Gates template in the demo generator. If we want to try other projects, use this URL instead - https://vstsdemogenerator.azurewebsites.net/
-
+   >Note: The above URL will automatically select Release Gates template in the demo generator. If you want to try other projects, use this [URL](https://vstsdemogenerator.azurewebsites.net/) instead.
+   
 
 ## Exercise 1: Service Endpoint creation
 
@@ -95,14 +97,14 @@ Azure Resource Manager Service Endpoint: Defines and secures a connection to a M
 
    ![](images/service_endpoint.png) 
 
-1. Provide Connection name, select the Subscription from the dropdown and click on the OK button. This endpoint will be used to connect the VSTS and the Azure.
+1. Provide Connection name, select the Subscription and Resource Group from the dropdowns then click on the OK button. This endpoint will be used to connect VSTS and Azure.
 
    ![](images/endpoint_name.png)
 
 ## Exercise 2: Configure App-Insights 
 In this exercise we will update the code with instrumentation key generated in application insights. 
 
-1. Go to **Code** tab and navigate to path ""src/PartsUnlimitedWebsite/config.json"" and update app-insights instrumentation key in line **35**.
+1. Go to **Code** tab and navigate to path *"src/PartsUnlimitedWebsite/config.json"* and update app-insights instrumentation key in **line 35**.
 
    ![](images/update_key.png)
 
@@ -122,12 +124,12 @@ In this exercise we will update the code with instrumentation key generated in a
 
    ![VSTS Demo Generator](images/predeployment.png)
 
-1. You will see **Triggers**, **Pre-deployment approvers**, **Gates** & **Deployment queue settings**. Let us enable **Pre-deployment approvals** and **Gates**.
+1. You will see **Triggers**, **Pre-deployment approvals**, **Gates** and **Deployment queue settings**. Let us enable **Pre-deployment approvals** and **Gates**.
 
 
    ![VSTS Demo Generator](images/enable_gates.png)
 
-1. Add yourself as an **approver**. By default, user requesting release will not be allowed to approve. Let us uncheck this condition.
+1. Add yourself as an **Approver**. By default, user requesting release will not be allowed to approve. Let us uncheck this condition.
 
    ![VSTS Demo Generator](images/add_approver.png) 
 
@@ -136,24 +138,24 @@ In this exercise we will update the code with instrumentation key generated in a
 
    ![VSTS Demo Generator](images/querywi.png)
 
-1. Select **Bugs** under Query. As maximum threshold is set to 0, if this query returns any work Item, the release gate will fail.
+1. Select **Bugs** under Query. As maximum threshold is set to "0", if this query returns any work Item, the release gate will fail.
 
    ![VSTS Demo Generator](images/qwi.png)
 
-1. To allow gate functions to initialize and stabilize (it may take some time for them to begin returning accurate results), we configure a delay before the results are evaluated and used to determine if the deployment should be approved or rejected. choose short periods so that we can see the results reasonably quickly. The minimum values we can specify is 6 minutes timeout and 5 minutes sampling interval.
+1. To allow gate functions to initialize and stabilize (it may take some time for it to begin returning accurate results), we configure a delay before the results are evaluated and used to determine if the deployment should be approved or rejected. Choose short periods so that we can see the results reasonably quick. The minimum values we can specify for timeout is 6 minutes and 5 minutes sampling interval.
 
->In this example, we have set **time between re-evaluation** as 5 minutes, **delay** as 6 minutes and **timeout** 12 minutes. When the release is triggered, gates will validate the sample in 0th and 5th minute. However, no action will be taken based on outcome. The next sample will be validated in 10th minute. If the result is "**Pass**", Notification would be sent for approval. If the result is "**Fail**", the release would time-out after 12th minute.
-    
+   >In this example, we have set **Delay before evaluation** as *6 minutes*, **Time between re-evaluation of gates** as *5 minutes* and **Timeout after which gates fail** as *12 minutes*. When the release is triggered, gates will validate the sample in 0<sup>th</sup> and 5<sup>th</sup> minute. However, no action will be taken based on outcome. The next sample will be validated in 10<sup>th</sup> minute. If the result is "**Pass**", Notification will be sent for approval. If the result is "**Fail**", the release will time-out after 12<sup>th</sup> minute.
+
    ![VSTS Demo Generator](images/gate_duration.png)
 
 
 ### Enabling Post-deployment Gate.
 
-1. Click on Post-deployment conditions
+1. Click on **Post-deployment conditions**
 
    ![VSTS Demo Generator](images/edit_pipeline.png)
 
-1. Add **Query Azure Monitor Alerts** to the gate.
+1. Enable **Gates** and Add **Query Azure Monitor Alerts** to the gate.
 
    ![VSTS Demo Generator](images/qam.png)
 
@@ -161,35 +163,35 @@ In this exercise we will update the code with instrumentation key generated in a
 
    ![VSTS Demo Generator](images/monitor_details.png)
 
-1.  Open the Options for all gates section and specify the timeout and the sampling interval. For this example, 
+1.  Expand the **Evaluation options** and specify the timeout and the sampling interval. 
 
     ![VSTS Demo Generator](images/gates-05.png)
 
-    The sampling interval and timeout work together so that the gates will call their functions at suitable intervals, and reject the deployment if they don't all succeed during the same sampling interval and within the timeout period. 
+    The sampling interval and timeout work together so that the gates will call their functions at suitable intervals and reject the deployment if they don't succeed during the same sampling interval within the timeout period. 
 
 ### Update Release Task
 
-1. In this release definition, we have two environments viz. Canary Environment & Production. Click on Canary environment to update the tasks
+1. In this release definition, we have two environments viz. Canary Environment & Production. Click on Canary Environment to update the tasks
 
    ![VSTS Demo Generator](images/canary_env.png)
 
-1. Each stage has a single task which will publish the package to Azure Web app. Let us update the Azure web app details.
+1. Each environment has a single task which will publish the package to Azure Web App. Let us update the Azure web app details.
 
    ![VSTS Demo Generator](images/canary_release.png)
 
-1. Update the tasks in Prod environment and save.
+1. Update the tasks in Production environment and save.
 
    ![VSTS Demo Generator](images/prod_release.png)
 
 ### Create New Release
 
-1. Click on Release and Create release.
+1. Click on **Release** and **Create release**.
  
    ![VSTS Demo Generator](images/release.png)
 
    ![VSTS Demo Generator](images/release1.png)
 
-1. Go to Release logs to see the progress. We will see Query Work Items failing. Which indicates there are active bugs, these bugs should be closed in-order to proceed further. Next sampling time will be after 5 minutes.
+1. Go to Release logs to see the progress. We will see Query Work Items have failed in delay before evaluation, which indicates there are active bugs. These bugs should be closed in-order to proceed further. Next sampling time will be after 5 minutes.
 
    ![VSTS Demo Generator](images/log1.png) 
   
@@ -202,44 +204,46 @@ In this exercise we will update the code with instrumentation key generated in a
 
    ![VSTS Demo Generator](images/bugs.png)
 
-1. We can see a bug with title **Canary Server out of disk space** in **New** State. Assuming that Infrastructure team has fixed the space issue, let us change the state to **Closed** and **Save** it.
+1. We will see a bug with title "**Disk out of space in Canary Environment**" in **New** State.
+Assuming that Infrastructure team has fixed the disk space issue, let us change the state to **Closed** and **Save** it.
 
    ![VSTS Demo Generator](images/close_bug.png) 
 
-1. Go back to release logs. You will see the evaluation is passed. However still the gate is under delay period we should wait for next evaluation to proceed.
+1. Go back to release logs. You will see the evaluation has passed. However, still the gate is under delay period we should wait for next evaluation to proceed.
 
     ![VSTS Demo Generator](images/log2.png) 
 
-1. When the evaluation is successful, you will see the request for pre-deployment approval. Click on approve, to deploy in Canary environment
+1. When the evaluation is successful, you will see the request for pre-deployment approval. Click on **Approve** to deploy in Canary environment
 
     ![VSTS Demo Generator](images/pre_approval.png)
 
 
-1. Once the deployment to Canary environment is successful, we will see the post deployment gates in action, which will start monitoring the app for any exceptions. 
+1. Once the deployment to Canary environment is successful, we will see the post deployment gates in action, which will start monitoring the application for any exceptions. 
 
     ![VSTS Demo Generator](images/post_deployment.png)
 
-1. Let us quickly verify the application. Go to Azure web app, and click on **Browse**.
+1. Let us quickly verify the application. Go to Azure web app in 
+Azure Portal, and click on **Browse**.
 
    ![VSTS Demo Generator](images/browse.png)
 
-1. When we click on **More**, we will encounter an error. Do this couple of times for triggering alert.
+1. After application is launched, click on **More**. We will encounter with an error page. Do this couple of times for triggering alert.
 
-   >This error scenario just for the purpose of the lab and in real world, analysis of the alert and a resolution like “disabling a feature flag” or “upgrading the infra” would be realistic.
+   >This error scenario is just for the purpose of the lab and in real world, analysis of the alert and a resolution like “disabling a feature flag” or “upgrading the infra” would be realistic.
 
    ![VSTS Demo Generator](images/exception.png) 
    
-1. This exception is monitored by **App-Insights** which will trigger alert. In Azure Portal, we will be able to see the alert triggered.
+1. This exception is monitored by **Application Insights** which will trigger alert. In Azure Portal, we will be able to see the alert triggered.
 
    ![VSTS Demo Generator](images/alert_triggered.png)
    
-1. As there were exception, **Query Azure Monitor** gate will block the pipeline and prevents the deployment to **production**.
+1. As there was an exception, **Query Azure Monitor** gate will block the pipeline and prevents the deployment to **Production** Environment.
 
    ![VSTS Demo Generator](images/timeout.png)
   
 
-Gates ensure the release waits for us to react to feedback and fix any issues within a timeout period. Until the issues are fixed, the gate samples continue to fail and the deployment waits. Once the issues are fixed, the next sample from the gates becomes successful and the deployment automatically proceeds.
-If a new release is required to fix the issues, then we can cancel the deployment, and manually abandon the current release.
+Gates ensure the release waits for us to react to the feedback and fix any issues within a timeout period. Until the issues are fixed, the gate samples continue to fail and the deployment waits. Once the issues are fixed, the next sample from the gates becomes successful and the deployment automatically proceeds.
+If a new release is required to fix the issues, then we can cancel the deployment and manually abandon the current release.
 
 Release Gates will help the teams release applications with higher confidence and fewer manual inputs. 
     
