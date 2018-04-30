@@ -90,7 +90,7 @@ Use [VSTS Demo Generator](https://demogen.azurewebsites.net/?TemplateId=77375&Na
 
 1. Select the **Team Services account** from the drop down for which you will generate the team project. Provide the **Project Name** and click **Create Project**.
 
-    ![vstsdemogen_createtp](images/vstsdemogen_createtp.png)
+    ![vstsdemogen_createtp](images/VSTSdemogen_createtp.png)
 
 1. Once the project is provisioned, click the **URL** to navigate to the project.
 
