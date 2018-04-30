@@ -21,11 +21,11 @@ In this lab, we will use Work item query as Pre-deployment gate and Azure monito
 
 If there are any active bugs, deployment will not happen to Canary environment. Similarly, if Application Insights detects any exception in the deployed application then the deployment will not be promoted to Production.
 
-<<<<<<< HEAD
+
 ## Pre-requisites
-=======
+
 1. You will need a **Visual Studio Team Services Account**. If you do not have one, you can sign up for free [here](https://www.visualstudio.com/team-services/)
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
+
 
 1. **Microsoft Azure Account:** You will need a valid and active azure account for the lab
 
@@ -55,11 +55,11 @@ In this lab we will create two **Web Apps** in Azure to depict two environments 
 
     ![key](images/key.png)
 
-<<<<<<< HEAD
+
 1. Scroll down and click on **Alerts (classic)** in the left pane. Let us add an alert for failed requests. 
-=======
+
 1. Scroll down and click on **Alerts (classic)**. Let us add an alert for server exceptions. 
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
+
     
     ![select_alerts](images/select_alerts.png)
 
@@ -67,25 +67,13 @@ In this lab we will create two **Web Apps** in Azure to depict two environments 
 
     ![add_alert](images/add_alert.png)
 
-<<<<<<< HEAD
 1. Provide a **Name** for the alert, select **Failed requests** from the dropdown under **Metric**, select **Over the last hour** as **Period** and observe **Condition**, **Threshold** then click **OK**.
-=======
-1. Provide **Name** and select **Server Exceptions** from the dropdown under **Metric**, observe **Condition**, **Threshold** and **Period**,  and click **OK**.
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
     ![alert_details](images/alert_details.png)
 
 1. Repeat **Step 1 & Step 2** to create web app for production.
 
-<<<<<<< HEAD
 ## Setting up the VSTS team project
-=======
-## Setting up Team Services project
-
-   > Note: Currenctly VSTS Demo Data Generator 2 URL has been used to create the project and later we have to update the screenshots for the same.- 5th Apr 2018
-
-1. Use [VSTS Demo Generator](https://demogen.azurewebsites.net/?TemplateId=77375&Name=ReleaseGates) to provision the project in VSTS account.
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
 Use [VSTS Demo Generator](https://demogen.azurewebsites.net/?TemplateId=77375&Name=ReleaseGates) to provision the project on your VSTS account.
 
@@ -98,14 +86,9 @@ Use [VSTS Demo Generator](https://demogen.azurewebsites.net/?TemplateId=77375&Na
 
 1. Accept the request for permissions by clicking on the **Accept** button.
 
-<<<<<<< HEAD
     ![vstsdemogen_terms](images/vstsdemogen_terms.png)
 
 1. Select the **Team Services account** from the drop down for which you will generate the team project. Provide the **Project Name** and click **Create Project**.
-=======
-   >Note: The above URL will automatically select Release Gates template in the demo generator. If you want to try other projects, use this [URL](https://vstsdemogenerator.azurewebsites.net/) instead.
-   
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
     ![vstsdemogen_createtp](images/vstsdemogen_createtp.png)
 
@@ -119,21 +102,13 @@ Service endpoints are a way for VSTS to connect to the external systems or servi
 
 Since the connections are not established during project provisioning, *Azure Resource Manager* endpoint need to be created manually.
 
-<<<<<<< HEAD
 **Azure Resource Manager Service Endpoint**: Defines and secures a connection to a Microsoft Azure subscription using Service Principal Authentication (SPA).
-=======
-1. Provide Connection name, select the Subscription and Resource Group from the dropdowns then click on the OK button. This endpoint will be used to connect VSTS and Azure.
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
 1. To setup Azure Service endpoint in VSTS, navigate to your Team Project and click on ![gear](images/gear.png) gear icon. Click **Services** tab and click on **+New Service Endpoint** in the left pane. From the drop-down, select **Azure Resource Manager**.
 
    ![service_endpoint](images/service_endpoint.png) 
 
-<<<<<<< HEAD
 1. Specify **Connection name**, select your **Subscription** from the dropdown and click **OK**. This endpoint will be used to connect VSTS and Azure.
-=======
-1. Go to **Code** tab and navigate to path *"src/PartsUnlimitedWebsite/config.json"* and update app-insights instrumentation key in **line 35**.
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
    ![](images/endpoint_name.png)
 
@@ -158,11 +133,7 @@ Since the connections are not established during project provisioning, *Azure Re
 
    ![VSTS Demo Generator](images/enable_gates.png)
 
-<<<<<<< HEAD
 1. Add yourself as an **Approver** and by default, user requesting a release or deployment should not approve. However for this lab purpose, let us uncheck this condition.
-=======
-1. Add yourself as an **Approver**. By default, user requesting release will not be allowed to approve. Let us uncheck this condition.
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
    ![add_approver](images/add_approver.png) 
 1. Add **Query Work Items** to the Gates.
@@ -173,27 +144,15 @@ Since the connections are not established during project provisioning, *Azure Re
 
    ![qwi](images/qwi.png)
 
-<<<<<<< HEAD
 1. Let us set the evaluation options.
-=======
-1. Select **Bugs** under Query. As maximum threshold is set to "0", if this query returns any work Item, the release gate will fail.
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
    >*Delay before evaluation:* Time before the added gates are evaluated for the first time. If no gates are added, then the deployments wait for the duration before proceeding. To allow gate functions to initialize and stabilize (it may take some time for it to begin returning accurate results), we configure a delay before the results are evaluated and used to determine if the deployment should be approved or rejected.
    
    >*Time between re-evaluation of gates:* The time interval between each evaluation of all the gates. At each sampling interval, new requests are sent concurrently to each gate for fresh results. The sampling interval must be greater than the longest typical response time of any configured gate to allow time for all responses to be received.
 
-<<<<<<< HEAD
    >*Timeout after which gates fail:* The maximum evaluation period for all gates. The deployment will be rejected if the timeout is reached before all gates succeed during the same sampling interval. The minimum value we can specify for timeout is 6 minutes and 5 minutes for sampling interval.
 
    In this example, we have set **Delay before evaluation** as *5 minutes* (so that we can see the results reasonably quick.), **Time between re-evaluation of gates** as *5 minutes* (sampling interval) and **Timeout after which gates fail** as *12 minutes*. When the release is triggered, gate will validate the samples at *0<sup>th</sup> and 5<sup>th</sup> minutes*. However, no action will be taken based on outcome of these two samples until the next sample validates at *10<sup>th</sup> minute*. If the result is "**Pass**", notification will be sent for approval. If the result is "**Fail**", the release will time-out after *12<sup>th</sup> minute*.
-=======
-1. To allow gate functions to initialize and stabilize (it may take some time for it to begin returning accurate results), we configure a delay before the results are evaluated and used to determine if the deployment should be approved or rejected. Choose short periods so that we can see the results reasonably quick. The minimum values we can specify for timeout is 6 minutes and 5 minutes sampling interval.
-
-   >In this example, we have set **Delay before evaluation** as *6 minutes*, **Time between re-evaluation of gates** as *5 minutes* and **Timeout after which gates fail** as *12 minutes*. When the release is triggered, gates will validate the sample in 0<sup>th</sup> and 5<sup>th</sup> minute. However, no action will be taken based on outcome. The next sample will be validated in 10<sup>th</sup> minute. If the result is "**Pass**", Notification will be sent for approval. If the result is "**Fail**", the release will time-out after 12<sup>th</sup> minute.
-
-   ![VSTS Demo Generator](images/gate_duration.png)
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
    ![gate_duration](images/gate_duration.png)
 
@@ -211,27 +170,15 @@ Since the connections are not established during project provisioning, *Azure Re
 
    ![monitor_details](images/monitor_details.png)
 
-<<<<<<< HEAD
 1.  Expand the **Evaluation options** and specify the *delay*, *timeout* and the *sampling interval*. 
-=======
-1.  Expand the **Evaluation options** and specify the timeout and the sampling interval. 
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
     ![post_deployment_gates](images/post_deployment_gates.png)
 
-<<<<<<< HEAD
     >The sampling interval and timeout work together so that the gates will call their functions at suitable intervals and reject the deployment if they don't succeed during the same sampling interval within the timeout period. 
 
 ### Update Release Task
 
 1. In this release definition, we have two environments viz. *Canary Environment* & *Production*. Click on Canary Environment to update the tasks.
-=======
-    The sampling interval and timeout work together so that the gates will call their functions at suitable intervals and reject the deployment if they don't succeed during the same sampling interval within the timeout period. 
-
-### Update Release Task
-
-1. In this release definition, we have two environments viz. Canary Environment & Production. Click on Canary Environment to update the tasks
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
    ![canary_env](images/canary_env.png)
 
@@ -246,23 +193,13 @@ Since the connections are not established during project provisioning, *Azure Re
 ## Exercise 3: Configure Application Insights 
 In this exercise, we will update the code with *Instrumentation key* generated in application insights. 
 
-<<<<<<< HEAD
 1. Go to **Code** tab. Navigate to path *"src/PartsUnlimitedWebsite/appsettings.json"* and update application insights instrumentation key in **line 3**.
-=======
-1. Click on **Release** and **Create release**.
- 
-   ![VSTS Demo Generator](images/release.png)
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
    ![update_key](images/update_key.png)
 
-<<<<<<< HEAD
 1. Commit the changes.
    
    ![commit](images/commit.png)
-=======
-1. Go to Release logs to see the progress. We will see Query Work Items have failed in delay before evaluation, which indicates there are active bugs. These bugs should be closed in-order to proceed further. Next sampling time will be after 5 minutes.
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
 1. The build will automatically trigger as we have Continuous Integration (CI) trigger type enabled in the Build definition. Once the Build succeeds, navigate to the **Releases** tab. You will notice the release have been triggered after the successful build.
 
@@ -284,11 +221,7 @@ Assuming that Infrastructure team has fixed the disk space issue, let us change 
 
    ![close_bug](images/close_bug.png) 
 
-<<<<<<< HEAD
 1. Go back to release logs. You will see the evaluation has passed.
-=======
-1. Go back to release logs. You will see the evaluation has passed. However, still the gate is under delay period we should wait for next evaluation to proceed.
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
     ![log2](images/log2.png) 
 
@@ -297,20 +230,12 @@ Assuming that Infrastructure team has fixed the disk space issue, let us change 
     ![pre_approval](images/pre_approval.png)
 
 
-<<<<<<< HEAD
 1. Once the deployment to Canary environment is successful, we will see the post-deployment gates in action which will start monitoring the application for any exceptions. 
-=======
-1. Once the deployment to Canary environment is successful, we will see the post deployment gates in action, which will start monitoring the application for any exceptions. 
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
     ![post_deployment](images/post_deployment.png)
 
 1. Let us quickly verify the application. Go to Azure web app in 
-<<<<<<< HEAD
 Azure Portal and click on **Browse**.
-=======
-Azure Portal, and click on **Browse**.
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
    ![browse](images/browse.png)
 
@@ -321,31 +246,20 @@ Azure Portal, and click on **Browse**.
    ![exception](images/exception.png) 
    
 1. This exception is monitored by **Application Insights** which will trigger alert. In Azure Portal, we will be able to see the alert triggered.
-<<<<<<< HEAD
 
    ![alert_triggered](images/alert_triggered.png)
-=======
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
 1. As there was an alert triggered by the exception, **Query Azure Monitor** gate have failed. However, still the gate is under delay period and we should wait for next evaluation to proceed.
 
    ![qamlog](images/qamlog.png)
    
-<<<<<<< HEAD
 1. As the next step, **Query Azure Monitor** gate will block the pipeline and prevents the deployment to **Production** Environment.
-=======
-1. As there was an exception, **Query Azure Monitor** gate will block the pipeline and prevents the deployment to **Production** Environment.
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 
    ![timeout](images/timeout.png)
   
 
-<<<<<<< HEAD
 Gates ensures that the release waits for us to react to the feedback and fix any issues within a timeout period. The gate-samples continue to fail and the deployment waits until the issues are fixed. Once the issues are fixed, the next sample from the gates becomes successful and the deployment automatically proceeds.
 
-=======
-Gates ensure the release waits for us to react to the feedback and fix any issues within a timeout period. Until the issues are fixed, the gate samples continue to fail and the deployment waits. Once the issues are fixed, the next sample from the gates becomes successful and the deployment automatically proceeds.
->>>>>>> 05ce417cc30e52fff0e305ef7e5c0cf22d15b68e
 If a new release is required to fix the issues, then we can cancel the deployment and manually abandon the current release.
 
 Release Gates will help the teams release applications with higher confidence and fewer manual inputs. 
