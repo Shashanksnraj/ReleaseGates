@@ -29,7 +29,7 @@ If there are any active bugs, deployment will not happen to Canary environment. 
 
 1. **Microsoft Azure Account:** You will need a valid and active azure account for the lab
 
-1. You will need a **Visual Studio Team Services Account**. If you do not have one, you can sign up for free [here](https://www.visualstudio.com/team-services/)
+
 
 ## Setting up Target Environment
 
