@@ -79,6 +79,7 @@ Use [VSTS Demo Generator](https://demogen.azurewebsites.net/?TemplateId=77375&Na
     {% include note.html content= "This URL will automatically select **Release Gates** template in the demo generator. If you want to try other projects, use this [URL](https://vstsdemogenerator.azurewebsites.net/){:target=\"_blank\"} instead." %}
      
 1. Click the **Sign In** button to log in with your VSTS account credentials.
+
    ![vstsdemogen_signin](images/vstsdemogen_signin.png)
 
 1. Accept the request for permissions by clicking on the **Accept** button.
