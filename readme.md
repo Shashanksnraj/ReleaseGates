@@ -57,10 +57,7 @@ In this lab we will create two **Web Apps** in Azure to depict two environments 
 
 
 1. Scroll down and click on **Alerts (classic)** in the left pane. Let us add an alert for failed requests. 
-
-1. Scroll down and click on **Alerts (classic)**. Let us add an alert for server exceptions. 
-
-    
+ 
     ![select_alerts](images/select_alerts.png)
 
 1. Click on **+Add metric alert (classic)**.
