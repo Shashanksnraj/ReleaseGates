@@ -27,7 +27,7 @@ If there are any active bugs, deployment will not happen to Canary environment. 
 1. You will need a **Visual Studio Team Services Account**. If you do not have one, you can sign up for free [here](https://www.visualstudio.com/team-services/)
 
 
-1. **Microsoft Azure Account:** You will need a valid and active azure account for the lab
+1. **Microsoft Azure Account:** You will need an active Azure subscription for the lab. You should be an [Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#owner), or [Global administrator](https://docs.microsoft.com/en-us/azure/active-directory/active-directory-assign-admin-roles-azure-portal#global-administrator), or [User Account administrator](https://docs.microsoft.com/en-us/azure/active-directory/active-directory-assign-admin-roles-azure-portal#user-account-administrator) on the subsription.
 
 
 
@@ -43,36 +43,20 @@ In this lab we will create two **Web Apps** in Azure to depict two environments 
     
     ![canary_app](images/canary_app.png)
 
-1. Once the deployment succeeds, Go to resource.
+1. Once the deployment succeeds, navigate to your **Resource Group** to see the resources created.
     
     ![deployment_success](images/deployment_success.png)
 
-1. We will see web app and application insights being provisioned. [Application insights](https://azure.microsoft.com/en-in/services/application-insights/) is used to monitor the Web app. Click on **Application Insights** which was created just now.
+1. We will see a Web App and an Application Insights being provisioned.
+[Application Insights](https://azure.microsoft.com/en-in/services/application-insights/) is used to monitor the Web app.
     
     ![select_ai](images/select_ai.png)
 
-1. Note down the **Instrumentation Key** which will be used to configure the SDK in the application.
-
-    ![key](images/key.png)
-
-
-1. Scroll down and click on **Alerts (classic)** in the left pane. Let us add an alert for failed requests. 
- 
-    ![select_alerts](images/select_alerts.png)
-
-1. Click on **+Add metric alert (classic)**.
-
-    ![add_alert](images/add_alert.png)
-
-1. Provide a **Name** for the alert, select **Failed requests** from the dropdown under **Metric**, select **Over the last hour** as **Period** and observe **Condition**, **Threshold** then click **OK**.
-
-    ![alert_details](images/alert_details.png)
-
-1. Repeat **Step 1 & Step 2** to create web app for production.
+1. Repeat **Step 1 & Step 2** to create Web App for production.
 
 ## Setting up the VSTS team project
 
-Use [VSTS Demo Generator](https://demogen.azurewebsites.net/?TemplateId=77375&Name=ReleaseGates) to provision the project on your VSTS account.
+Use [VSTS Demo Generator](https://vstsdemogenerator-test.azurewebsites.net/?TemplateId=77375&Name=ReleaseGates) to provision the project on your VSTS account.
 
    > ***VSTS Demo Generator** helps you create team projects on your VSTS account with sample content that include source code, work items, iterations, service endpoints, build and release definitions based on the template you choose during the configuration.*
 
@@ -94,31 +78,53 @@ Use [VSTS Demo Generator](https://demogen.azurewebsites.net/?TemplateId=77375&Na
 
    ![vstsdemogen_create](images/vstsdemogen_create.png)
 
-## Exercise 1: Service Endpoint creation
+## Exercise 1: Configure Release definition for deploying the app
 
-Service endpoints are a way for VSTS to connect to the external systems or services and they are a bundle of properties securely stored by the VSTS. Service endpoints are created at project scope, hence an endpoint created in one project will not be visible in another project.
+### Update Release Tasks
 
-Since the connections are not established during project provisioning, *Azure Resource Manager* endpoint need to be created manually.
+1. Navigate to **Releases** under **Buid and Release** section and **Edit** release definition **PartsUnlimited-CD**. In this release definition, we have two environments viz. *Canary Environment* & *Production*. Click on **“1 phase, 3 tasks”** link for Canary Environment to update the tasks.
 
-**Azure Resource Manager Service Endpoint**: Defines and secures a connection to a Microsoft Azure subscription using Service Principal Authentication (SPA).
+   ![canary_env](images/canary_env.png)
 
-1. To setup Azure Service endpoint in VSTS, navigate to your Team Project and click on ![gear](images/gear.png) gear icon. Click **Services** tab and click on **+New Service Endpoint** in the left pane. From the drop-down, select **Azure Resource Manager**.
+1. Canary environment has 3 tasks which will publish the package to Azure Web App, enables continuous monitoring of the application after deployment and also Application Insights Alerts will be configured. Let us update the Azure Subscription, Web App and corresponding Application Insights details.
 
-   ![service_endpoint](images/service_endpoint.png) 
+   ![canary_release](images/canary_release.png)
 
-1. Specify **Connection name**, select your **Subscription** from the dropdown and click **OK**. This endpoint will be used to connect VSTS and Azure.
+1. In Azure Subscription field, select your Azure subscription from the dropdown and click on **Authorize**. Provide your credentials to complete the authorization to your Azure account.
 
-   ![](images/endpoint_name.png)
+   ![azure_subscription](images/azure_subscription.png)
 
-    {% include note.html content= "Disable pop-up blocker in your browser if you see a blank screen after clicking OK, and retry the step.
-    
-    By default, **Azure Resource Manager** service endpoints that are automatically configured are created with **Contributor** role in the selected Azure subscription. Access will be restricted to all resources within the specific resource group if a **Resource Group** is selected during the creation of an Azure Resource Manager service endpoint" %}
+   {% include note.html content= "Disable pop-up blocker in your browser if you see a blank screen after clicking Authorize, and retry the step." %}
+
+1. Select the App Service, Resource Group and Application Insights that we created for Canary from the dropdown.
+
+   ![canary_app_details](images/canary_app_details.png)
+
+1. For Production, select the endpoint from the dropdown under *Available Azure service connections*. Pick the App service we created for Production and click on Save.
+
+   ![prod_release](images/prod_release.png)
+
+1. Navigate to **Builds** tab under **Build and Release** section and **Queue new build** for the build definition **PartsUnlimited-CI**.
+
+   ![queue_build](images/queue_build.png)
+
+   ![queue_build1](images/queue_build1.png)
+
+1. After the build succeeds, the Release will be triggered automatically and the application will be deployed to both the environments. Browse the Web site after the application is deployed to both environments.
+
+   ![build1_complete](images/build1_complete.png)
+
+   ![release1_complete](images/release1_complete.png)
+
+1. This would automatically hook the Web App with App Insights and configure the Alerts in Azure.
+
+   ![ai_alerts](images/ai_alerts.png)
 
 ## Exercise 2: Configure Deployment Gates.
 
 ### Enabling Pre-deployment Gate
 
-1. Go to **Releases** under **Buid and Release** section and **Edit** release definition **PartsUnlimited-CD**.
+1. Go to **Releases** and **Edit** release definition **PartsUnlimited-CD**.
 
    ![edit_release](images/edit_release.png)
 
@@ -150,7 +156,9 @@ Since the connections are not established during project provisioning, *Azure Re
 
    >*Timeout after which gates fail:* The maximum evaluation period for all gates. The deployment will be rejected if the timeout is reached before all gates succeed during the same sampling interval. The minimum value we can specify for timeout is 6 minutes and 5 minutes for sampling interval.
 
-   In this example, we have set **Delay before evaluation** as *5 minutes* (so that we can see the results reasonably quick.), **Time between re-evaluation of gates** as *5 minutes* (sampling interval) and **Timeout after which gates fail** as *12 minutes*. When the release is triggered, gate will validate the samples at *0<sup>th</sup> and 5<sup>th</sup> minutes*. However, no action will be taken based on outcome of these two samples until the next sample validates at *10<sup>th</sup> minute*. If the result is "**Pass**", notification will be sent for approval. If the result is "**Fail**", the release will time-out after *12<sup>th</sup> minute*.
+   For this demo purpose, we have set **Delay before evaluation** as *5 minutes* (so that we can see the results reasonably quick.), **Time between re-evaluation of gates** as *5 minutes* (sampling interval) and **Timeout after which gates fail** as *8 minutes* but in reality the durations will be in hours sometime. When the release is triggered, gate will validate the samples at *0<sup>th</sup> and 5<sup>th</sup> minutes*. If the result is "**Pass**", notification will be sent for approval. If the result is "**Fail**", the release will time-out after *8<sup>th</sup> minute*.
+
+   Select **On successful gates, ask for approvals** radio button.
 
    ![gate_duration](images/gate_duration.png)
 
@@ -168,30 +176,16 @@ Since the connections are not established during project provisioning, *Azure Re
 
    ![monitor_details](images/monitor_details.png)
 
-1.  Expand the **Evaluation options** and specify the *delay*, *timeout* and the *sampling interval*. 
+1.  Expand the **Evaluation options** and specify the *delay*, *sampling interval* and the *timeout*. Select **On successful gates, ask for approvals** radio button.
 
     ![post_deployment_gates](images/post_deployment_gates.png)
 
     >The sampling interval and timeout work together so that the gates will call their functions at suitable intervals and reject the deployment if they don't succeed during the same sampling interval within the timeout period. 
 
-### Update Release Task
+## Exercise 3: Deploy app update after adding release gates 
+In this exercise, we will make a small code change in the application and commit to the repository which in turn triggers build and release.
 
-1. In this release definition, we have two environments viz. *Canary Environment* & *Production*. Click on Canary Environment to update the tasks.
-
-   ![canary_env](images/canary_env.png)
-
-1. Each environment has a single task which will publish the package to Azure Web App. Let us update the Azure web app details.
-
-   ![canary_release](images/canary_release.png)
-
-1. Update the tasks in Production environment and save.
-
-   ![prod_release](images/prod_release.png)
-
-## Exercise 3: Configure Application Insights 
-In this exercise, we will update the code with *Instrumentation key* generated in application insights. 
-
-1. Go to **Code** tab. Navigate to path *"src/PartsUnlimitedWebsite/appsettings.json"* and update application insights instrumentation key in **line 3**.
+1. Go to **Code** tab. Navigate to path *"src/PartsUnlimitedWebsite/Views/Home/Index.cshtml"* and modify the content from ***"20%"*** to ***"30%"*** in **line 30**.
 
    ![update_key](images/update_key.png)
 
@@ -199,7 +193,7 @@ In this exercise, we will update the code with *Instrumentation key* generated i
    
    ![commit](images/commit.png)
 
-1. The build will automatically trigger as we have Continuous Integration (CI) trigger type enabled in the Build definition. Once the Build succeeds, navigate to the **Releases** tab. You will notice the release have been triggered after the successful build.
+1. The build will automatically trigger as we have Continuous Integration (CI) trigger type enabled in the build definition. Once the build succeeds, navigate to the **Releases** tab. You will notice the release have been triggered after the successful build.
 
 1. Go to Release logs to see the progress. We will see Query Work Items have failed in delay before evaluation, which indicates there are active bugs. These bugs should be closed in-order to proceed further. Next sampling time will be after 5 minutes.
 
@@ -210,7 +204,7 @@ In this exercise, we will update the code with *Instrumentation key* generated i
 
    ![goto_queries](images/goto_queries.png)
 
-1. Select **Bugs** under **Shared Queries**
+1. Select **Bugs** under **Shared Queries**.
 
    ![bugs](images/bugs.png)
 
@@ -237,7 +231,7 @@ Azure Portal and click on **Browse**.
 
    ![browse](images/browse.png)
 
-1. After application is launched, click on **More**. We will encounter with an error page. Do this couple of times for triggering alert.
+1. After application is launched, click on **More**. We will encounter with an error page. Do this couple of times to trigger alerts.
 
    >This error scenario is just for the purpose of the lab and in real world, analysis of the alert and a resolution like “disabling a feature flag” or “upgrading the infra” would be realistic.
 
@@ -255,6 +249,7 @@ Azure Portal and click on **Browse**.
 
    ![timeout](images/timeout.png)
   
+   ![release_failed](images/release_failed.png)
 
 Gates ensures that the release waits for us to react to the feedback and fix any issues within a timeout period. The gate-samples continue to fail and the deployment waits until the issues are fixed. Once the issues are fixed, the next sample from the gates becomes successful and the deployment automatically proceeds.
 
