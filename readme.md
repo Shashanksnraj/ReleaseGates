@@ -221,7 +221,6 @@ Assuming that Infrastructure team has fixed the disk space issue, let us change 
 
     ![pre_approval](images/pre_approval.png)
 
-
 1. Once the deployment to Canary environment is successful, we will see the post-deployment gates in action which will start monitoring the application for any exceptions. 
 
     ![post_deployment](images/post_deployment.png)
