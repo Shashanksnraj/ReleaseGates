@@ -116,7 +116,7 @@ Use [VSTS Demo Generator](https://vstsdemogenerator-test.azurewebsites.net/?Temp
 
    ![release1_complete](images/release1_complete.png)
 
-1. This would automatically hook the Web App with App Insights and configure the Alerts in Azure.
+1. This would automatically hook the Web App with App Insights and configure the Alerts in Azure under *CanaryRelease* Application Insights **Alerts (classic)** section.
 
    ![ai_alerts](images/ai_alerts.png)
 
