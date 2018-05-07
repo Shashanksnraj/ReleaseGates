@@ -1,35 +1,41 @@
-## Control the Deployment through Release Gates
+# Release safely - expose changes to end users in a phased manner. 
+### Control deployments using Approvals and Gates.
 
-Release Gates allow you to configure automated calls to external services, where the results are used to approve or reject a deployment. You can use gates to ensure that the release meets a wide range of criteria without requiring user intervention. When a release is created from a definition that contains gates, the deployment stops until the health signals from all the configured services are successful.
+## Overview
+
+As you may be aware, a release definition specifies the end-to-end release process for an app to be deployed across a range of environments. Deployments to each environment are fully automated by using phases and tasks. 
+Ideally, you do not want new updates to the applications to be exposed to all the users at the same time. It is a best practice to expose updates in a phased manner i.e. expose to a subset of users, monitor their usage and expose to other users based on the experience the initial set of users had.
+
+Approvals and gates enable you to take control over the start and completion of the deployments in a release. 
+With approvals, you can wait for users to manually approve or reject deployments.
+Using release gates, you can specify application health criteria that must be met before release is promoted to the next environment. Prior to or after any environment deployment, all the specified gates are automatically evaluated until they all pass or until they reach your defined timeout period and fail.
+
 Gates can be added to an environment in the release definition from the pre-deployment conditions or the post-deployment conditions panel. Multiple gates can be added to the environment conditions to ensure all the inputs are successful for the release.
 
-**Pre-deployment gates:** Ensures there are no active issues in the work item or problem management system before deploying a build to an environment.
+As an example - 
+**Pre-deployment gates** ensures there are no active issues in the work item or problem management system before deploying a build to an environment.
+**Post-deployment gates** ensures there are no incidents from the monitoring or incident management system for the app after it's been deployed, before promoting the release to next environment.
 
-**Post-deployment gates:** Ensures there are no incidents from the monitoring or incident management system for the app after it's been deployed, before promoting the release to next environment.
+4 types of gates are included by default for every account.
 
-At present the available gates include:
+1. **Invoke Azure function:** Trigger execution of an Azure function and ensure a successful completion. For more details, see [Azure function task](https://docs.microsoft.com/en-us/vsts/build-release/tasks/utility/azure-function)
 
-1. **Azure function:** Trigger execution of an Azure function and ensure a successful completion. For more details, see [Azure function task](https://docs.microsoft.com/en-us/vsts/build-release/tasks/utility/azure-function)
-
-1. **Azure monitor:** Observe the configured Azure monitor alert rules for active alerts. For more details, see [Azure monitor task](https://docs.microsoft.com/en-us/vsts/build-release/tasks/utility/azure-monitor)
+1. **Query Azure monitor alerts:** Observe the configured Azure monitor alert rules for active alerts. For more details, see [Azure monitor task](https://docs.microsoft.com/en-us/vsts/build-release/tasks/utility/azure-monitor)
 
 1. **Invoke REST API:** Make a call to a REST API and continue if it returns a successful response. For more details, see [HTTP REST API task](https://docs.microsoft.com/en-us/vsts/build-release/tasks/utility/http-rest-api)
 
-1. **Work item query:** Ensure the number of matching work items returned from a query is within a threshold. For more details, see [Work item query task](https://docs.microsoft.com/en-us/vsts/build-release/tasks/utility/work-item-query)
+1. **Query Workitems:** Ensure the number of matching work items returned from a query is within a threshold. For more details, see [Query Workitems task](https://docs.microsoft.com/en-us/vsts/build-release/tasks/utility/work-item-query)
 
-In this lab, we will use Work item query as Pre-deployment gate and Azure monitor (Application Insight) as Post-deployment gate to monitor the application in **Canary** Environment. A Canary release is a pattern for rolling out releases to a subset of users or servers, before making it available to everybody. It is an early warning indicator with less impact on downtime: if the canary deployment fails, the rest of the servers aren't impacted. A canary release can help you to identify problems that surface in the production environment before they affect your entire user base. 
+## What's covered in this lab
 
-If there are any active bugs, deployment will not happen to Canary environment. Similarly, if Application Insights detects any exception in the deployed application then the deployment will not be promoted to Production.
-
+This lab covers the configuration of the deployment gates and details how to add control to VSTS releases.
+We'l lconfigure a release definition with two environments for an Azure web app. We'll deploy to the **Canary** environment only when there are no blocking bugs for the app and mark the Canary environment complete only when there are no active alerts with Azure Monitor (Application Insights). 
 
 ## Pre-requisites
 
 1. You will need a **Visual Studio Team Services Account**. If you do not have one, you can sign up for free [here](https://www.visualstudio.com/team-services/)
 
-
-1. **Microsoft Azure Account:** You will need an active Azure subscription for the lab. You should be an [Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#owner), or [Global administrator](https://docs.microsoft.com/en-us/azure/active-directory/active-directory-assign-admin-roles-azure-portal#global-administrator), or [User Account administrator](https://docs.microsoft.com/en-us/azure/active-directory/active-directory-assign-admin-roles-azure-portal#user-account-administrator) on the subsription.
-
-
+1. **Microsoft Azure Subscription:** You will need an active Azure subscription for the lab. You should be an [Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#owner), or [Global administrator](https://docs.microsoft.com/en-us/azure/active-directory/active-directory-assign-admin-roles-azure-portal#global-administrator), or [User Account administrator](https://docs.microsoft.com/en-us/azure/active-directory/active-directory-assign-admin-roles-azure-portal#user-account-administrator) on the subsription.
 
 ## Setting up Target Environment
 
@@ -156,7 +162,7 @@ Use [VSTS Demo Generator](https://vstsdemogenerator-test.azurewebsites.net/?Temp
 
    >*Timeout after which gates fail:* The maximum evaluation period for all gates. The deployment will be rejected if the timeout is reached before all gates succeed during the same sampling interval. The minimum value we can specify for timeout is 6 minutes and 5 minutes for sampling interval.
 
-   For this demo purpose, we have set **Delay before evaluation** as *5 minutes* (so that we can see the results reasonably quick.), **Time between re-evaluation of gates** as *5 minutes* (sampling interval) and **Timeout after which gates fail** as *8 minutes* but in reality the durations will be in hours sometime. When the release is triggered, gate will validate the samples at *0<sup>th</sup> and 5<sup>th</sup> minutes*. If the result is "**Pass**", notification will be sent for approval. If the result is "**Fail**", the release will time-out after *8<sup>th</sup> minute*.
+   For this demo purpose, we have set **Delay before evaluation** as *5 minutes* (so that we can see the results reasonably quick.), **Time between re-evaluation of gates** as *5 minutes* (sampling interval) and **Timeout after which gates fail** as *8 minutes* but in reality these durations might be in hours. When the release is triggered, gate will validate the samples at *0<sup>th</sup> and 5<sup>th</sup> minutes*. If the result is "**Pass**", notification will be sent for approval. If the result is "**Fail**", the release will time-out after *8<sup>th</sup> minute*.
 
    Select **On successful gates, ask for approvals** radio button.
 
@@ -254,5 +260,4 @@ Gates ensures that the release waits for us to react to the feedback and fix any
 
 If a new release is required to fix the issues, then we can cancel the deployment and manually abandon the current release.
 
-Release Gates will help the teams release applications with higher confidence and fewer manual inputs. 
-    
+So here are release gates, enabling teams to release applications with higher confidence with fewer manual steps. There is now a built-in audit of all the necessary criteria for a deployment being met.    
