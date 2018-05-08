@@ -1,9 +1,9 @@
-# Release safely - expose changes to end users in a phased manner. 
-### Control deployments using Approvals and Gates.
+# Release safely - Expose changes to end users in a phased manner. 
+
 
 ## Overview
 
-As you may be aware, a release definition specifies the end-to-end release process for an app to be deployed across a range of environments. Deployments to each environment are fully automated by using phases and tasks. 
+As you may be aware, a release definition specifies the end-to-end release process for an application to be deployed across a range of environments. Deployments to each environment are fully automated by using phases and tasks. 
 Ideally, you do not want new updates to the applications to be exposed to all the users at the same time. It is a best practice to expose updates in a phased manner i.e. expose to a subset of users, monitor their usage and expose to other users based on the experience the initial set of users had.
 
 Approvals and gates enable you to take control over the start and completion of the deployments in a release. 
@@ -12,26 +12,26 @@ Using release gates, you can specify application health criteria that must be me
 
 Gates can be added to an environment in the release definition from the pre-deployment conditions or the post-deployment conditions panel. Multiple gates can be added to the environment conditions to ensure all the inputs are successful for the release.
 
-As an example - 
+As an example- 
 **Pre-deployment gates** ensures there are no active issues in the work item or problem management system before deploying a build to an environment.
 **Post-deployment gates** ensures there are no incidents from the monitoring or incident management system for the app after it's been deployed, before promoting the release to next environment.
 
 4 types of gates are included by default for every account.
 
-1. **Invoke Azure function:** Trigger execution of an Azure function and ensure a successful completion. For more details, see [Azure function task](https://docs.microsoft.com/en-us/vsts/build-release/tasks/utility/azure-function)
+1. **Invoke Azure function:** Trigger execution of an Azure function and ensures a successful completion. For more details, see [Azure function task](https://docs.microsoft.com/en-us/vsts/build-release/tasks/utility/azure-function)
 
 1. **Query Azure monitor alerts:** Observe the configured Azure monitor alert rules for active alerts. For more details, see [Azure monitor task](https://docs.microsoft.com/en-us/vsts/build-release/tasks/utility/azure-monitor)
 
 1. **Invoke REST API:** Make a call to a REST API and continue if it returns a successful response. For more details, see [HTTP REST API task](https://docs.microsoft.com/en-us/vsts/build-release/tasks/utility/http-rest-api)
 
-1. **Query Workitems:** Ensure the number of matching work items returned from a query is within a threshold. For more details, see [Query Workitems task](https://docs.microsoft.com/en-us/vsts/build-release/tasks/utility/work-item-query)
+1. **Query Workitems:** Ensures the number of matching work items returned from a query is within a threshold. For more details, see [Query Workitems task](https://docs.microsoft.com/en-us/vsts/build-release/tasks/utility/work-item-query)
 
-## What's covered in this lab
+## What's covered in this lab?
 
 This lab covers the configuration of the deployment gates and details how to add control to VSTS releases.
-We'l lconfigure a release definition with two environments for an Azure web app. We'll deploy to the **Canary** environment only when there are no blocking bugs for the app and mark the Canary environment complete only when there are no active alerts with Azure Monitor (Application Insights). 
+You will configure a release definition with two environments for an Azure Web App. You will deploy to the **Canary** environment only when there are no blocking bugs for the app and mark the Canary environment complete only when there are no active alerts in Azure Monitor (Application Insights). 
 
-## Pre-requisites
+## Prerequisites
 
 1. You will need a **Visual Studio Team Services Account**. If you do not have one, you can sign up for free [here](https://www.visualstudio.com/team-services/)
 
@@ -39,13 +39,13 @@ We'l lconfigure a release definition with two environments for an Azure web app.
 
 ## Setting up Target Environment
 
-In this lab we will create two **Web Apps** in Azure to depict two environments **Canary** and **Production** to deploy the application.
+In this lab you will create two **Web Apps** in Azure to depict two environments **Canary** and **Production** to deploy the application.
 
-1. Go to [Azure portal](https://portal.azure.com) and click on **+New** and click **Web App**.
+1. Go to [Azure portal](https://portal.azure.com) and click on **+New** and select **Web App**.
     
     ![azure_webapp](images/azure_webapp.png)
 
-1. Provide name for **Web App**, create new **Resource Group** or select existing one from the dropdown, enable **Application Insights** and click **Create**.
+1. Provide a name for the **Web App**, create new **Resource Group** or select existing one from the dropdown. Enable **Application Insights** and click **Create**.
     
     ![canary_app](images/canary_app.png)
 
@@ -53,7 +53,7 @@ In this lab we will create two **Web Apps** in Azure to depict two environments 
     
     ![deployment_success](images/deployment_success.png)
 
-1. We will see a Web App and an Application Insights being provisioned.
+1. You will see a Web App and an Application Insights being provisioned.
 [Application Insights](https://azure.microsoft.com/en-in/services/application-insights/) is used to monitor the Web app.
     
     ![select_ai](images/select_ai.png)
@@ -84,15 +84,15 @@ Use [VSTS Demo Generator](https://vstsdemogenerator-test.azurewebsites.net/?Temp
 
    ![vstsdemogen_create](images/vstsdemogen_create.png)
 
-## Exercise 1: Configure Release definition for deploying the app
+## Exercise 1: Configure Release definition for deploying the application
 
 ### Update Release Tasks
 
-1. Navigate to **Releases** under **Buid and Release** section and **Edit** release definition **PartsUnlimited-CD**. In this release definition, we have two environments viz. *Canary Environment* & *Production*. Click on **“1 phase, 3 tasks”** link for Canary Environment to update the tasks.
+1. Navigate to **Releases** under **Buid and Release** section and **Edit** release definition **PartsUnlimited-CD**. In this release definition, you have two environments viz. *Canary Environment* & *Production*. Click on **“1 phase, 3 tasks”** link for Canary Environment to update the tasks.
 
    ![canary_env](images/canary_env.png)
 
-1. Canary environment has 3 tasks which will publish the package to Azure Web App, enables continuous monitoring of the application after deployment and also Application Insights Alerts will be configured. Let us update the Azure Subscription, Web App and corresponding Application Insights details.
+1. Canary environment has 3 tasks which will publish the package to Azure Web App, enables continuous monitoring of the application after deployment and also Application Insights Alerts will be configured. Update the Azure Subscription, Web App and corresponding Application Insights details.
 
    ![canary_release](images/canary_release.png)
 
@@ -102,11 +102,11 @@ Use [VSTS Demo Generator](https://vstsdemogenerator-test.azurewebsites.net/?Temp
 
    {% include note.html content= "Disable pop-up blocker in your browser if you see a blank screen after clicking Authorize, and retry the step." %}
 
-1. Select the App Service, Resource Group and Application Insights that we created for Canary from the dropdown.
+1. Select the App Service, Resource Group and Application Insights that you created for Canary environment from the dropdown.
 
    ![canary_app_details](images/canary_app_details.png)
 
-1. For Production, select the endpoint from the dropdown under *Available Azure service connections*. Pick the App service we created for Production and click on Save.
+1. For Production, select the **Azure subscription** from the dropdown. Pick the App service you created for Production and click on **Save** button.
 
    ![prod_release](images/prod_release.png)
 
@@ -116,13 +116,13 @@ Use [VSTS Demo Generator](https://vstsdemogenerator-test.azurewebsites.net/?Temp
 
    ![queue_build1](images/queue_build1.png)
 
-1. After the build succeeds, the Release will be triggered automatically and the application will be deployed to both the environments. Browse the Web site after the application is deployed to both environments.
+1. After the build succeeds, the release will be triggered automatically and the application will be deployed to both the environments. Browse the websites after the application is deployed.
 
    ![build1_complete](images/build1_complete.png)
 
    ![release1_complete](images/release1_complete.png)
 
-1. This would automatically hook the Web App with App Insights and configure the Alerts in Azure under *CanaryRelease* Application Insights **Alerts (classic)** section.
+1. This would automatically hook the Web App with Application Insights and configure the Alerts in Azure under *CanaryRelease* Application Insights **Alerts (classic)** section.
 
    ![ai_alerts](images/ai_alerts.png)
 
@@ -138,23 +138,23 @@ Use [VSTS Demo Generator](https://vstsdemogenerator-test.azurewebsites.net/?Temp
 
    ![predeployment](images/predeployment.png)
 
-1. You will see **Triggers**, **Pre-deployment approvals**, **Gates** and **Deployment queue settings**. Let us enable **Pre-deployment approvals** and **Gates**.
+1. You will see **Triggers**, **Pre-deployment approvals**, **Gates** and **Deployment queue settings**. Enable **Pre-deployment approvals** and **Gates**.
 
 
    ![VSTS Demo Generator](images/enable_gates.png)
 
-1. Add yourself as an **Approver** and by default, user requesting a release or deployment should not approve. However for this lab purpose, let us uncheck this condition.
+1. Add yourself as an **Approver** and by default, user requesting a release or deployment should not approve. However for the purpose of this lab, uncheck this condition.
 
    ![add_approver](images/add_approver.png) 
 1. Add **Query Work Items** to the Gates.
 
    ![querywi](images/querywi.png)
 
-1. Select **Bugs** under Query. As maximum threshold is set to "0", if this query returns any work Item, the release gate will fail.
+1. Select **Bugs** under Query. As maximum threshold is set to "0", if this query returns any active bug work Item, the release gate will fail.
 
    ![qwi](images/qwi.png)
 
-1. Let us set the evaluation options.
+1. Set the evaluation options.
 
    >*Delay before evaluation:* Time before the added gates are evaluated for the first time. If no gates are added, then the deployments wait for the duration before proceeding. To allow gate functions to initialize and stabilize (it may take some time for it to begin returning accurate results), we configure a delay before the results are evaluated and used to determine if the deployment should be approved or rejected.
    
@@ -162,7 +162,7 @@ Use [VSTS Demo Generator](https://vstsdemogenerator-test.azurewebsites.net/?Temp
 
    >*Timeout after which gates fail:* The maximum evaluation period for all gates. The deployment will be rejected if the timeout is reached before all gates succeed during the same sampling interval. The minimum value we can specify for timeout is 6 minutes and 5 minutes for sampling interval.
 
-   For this demo purpose, we have set **Delay before evaluation** as *5 minutes* (so that we can see the results reasonably quick.), **Time between re-evaluation of gates** as *5 minutes* (sampling interval) and **Timeout after which gates fail** as *8 minutes* but in reality these durations might be in hours. When the release is triggered, gate will validate the samples at *0<sup>th</sup> and 5<sup>th</sup> minutes*. If the result is "**Pass**", notification will be sent for approval. If the result is "**Fail**", the release will time-out after *8<sup>th</sup> minute*.
+   For this demo purpose, set **Delay before evaluation** as *5 minutes* (so that you can see the results reasonably quick.), **Time between re-evaluation of gates** as *5 minutes* (sampling interval) and **Timeout after which gates fail** as *8 minutes* but in reality these durations might be in hours. When the release is triggered, gate will validate the samples at *0<sup>th</sup> and 5<sup>th</sup> minutes*. If the result is "**Pass**", notification will be sent for approval. If the result is "**Fail**", the release will time-out after *8<sup>th</sup> minute*.
 
    Select **On successful gates, ask for approvals** radio button.
 
@@ -188,20 +188,20 @@ Use [VSTS Demo Generator](https://vstsdemogenerator-test.azurewebsites.net/?Temp
 
     >The sampling interval and timeout work together so that the gates will call their functions at suitable intervals and reject the deployment if they don't succeed during the same sampling interval within the timeout period. 
 
-## Exercise 3: Deploy app update after adding release gates 
-In this exercise, we will make a small code change in the application and commit to the repository which in turn triggers build and release.
+## Exercise 3: Update and deploy application after adding release gates 
+In this exercise, you will make a small code change in the application and commit to the repository which in-turn triggers build and release.
 
-1. Go to **Code** tab. Navigate to path *"src/PartsUnlimitedWebsite/Views/Home/Index.cshtml"* and modify the content from ***"20%"*** to ***"30%"*** in **line 30**.
+1. Go to **Code** tab. Navigate to path *"src/PartsUnlimitedWebsite/Views/Home/Index.cshtml"* and modify the content to ***"30%"*** from ***"20%"*** in **line 30**.
 
    ![update_key](images/update_key.png)
 
-1. Commit the changes.
+1. After the modification, **Commit** the changes.
    
    ![commit](images/commit.png)
 
-1. The build will automatically trigger as we have Continuous Integration (CI) trigger type enabled in the build definition. Once the build succeeds, navigate to the **Releases** tab. You will notice the release have been triggered after the successful build.
+1. The build will automatically trigger as we have *Continuous Integration (CI)* trigger type enabled in the build definition. Once the build succeeds, navigate to the **Releases** tab. You will notice the release have been triggered after the successful build.
 
-1. Go to Release logs to see the progress. We will see Query Work Items have failed in delay before evaluation, which indicates there are active bugs. These bugs should be closed in-order to proceed further. Next sampling time will be after 5 minutes.
+1. Go to release **Logs** to see the progress. You will see **Query Work Items** gate have failed in delay before evaluation, which indicates there are active bugs. These bugs should be closed in-order to proceed further. Next sampling time will be after 5 minutes.
 
    ![log1](images/log1.png) 
   
@@ -214,8 +214,8 @@ In this exercise, we will make a small code change in the application and commit
 
    ![bugs](images/bugs.png)
 
-1. We will see a bug with title "**Disk out of space in Canary Environment**" in **New** State.
-Assuming that Infrastructure team has fixed the disk space issue, let us change the state to **Closed** and **Save** it.
+1. You will see a bug with title "**Disk out of space in Canary Environment**" in **New** State.
+Assuming that Infrastructure team has fixed the disk space issue, change the state to **Closed** and **Save** it.
 
    ![close_bug](images/close_bug.png) 
 
@@ -231,12 +231,12 @@ Assuming that Infrastructure team has fixed the disk space issue, let us change 
 
     ![post_deployment](images/post_deployment.png)
 
-1. Let us quickly verify the application. Go to Azure web app in 
+1. Now, quickly verify the application. Go to *CanaryRelease* Azure Web App in 
 Azure Portal and click on **Browse**.
 
    ![browse](images/browse.png)
 
-1. After application is launched, click on **More**. We will encounter with an error page. Do this couple of times to trigger alerts.
+1. After application is launched, click on **More**. You will encounter with an error page. Do this couple of times to trigger alerts.
 
    >This error scenario is just for the purpose of the lab and in real world, analysis of the alert and a resolution like “disabling a feature flag” or “upgrading the infra” would be realistic.
 
@@ -246,7 +246,7 @@ Azure Portal and click on **Browse**.
 
    ![alert_triggered](images/alert_triggered.png)
 
-1. As there was an alert triggered by the exception, **Query Azure Monitor** gate have failed. However, still the gate is under delay period and we should wait for next evaluation to proceed.
+1. As there was an alert triggered by the exception, **Query Azure Monitor** gate have failed. However, the gate is still under delay period, you should wait for next evaluation to proceed.
 
    ![qamlog](images/qamlog.png)
    
@@ -256,8 +256,10 @@ Azure Portal and click on **Browse**.
   
    ![release_failed](images/release_failed.png)
 
-Gates ensures that the release waits for us to react to the feedback and fix any issues within a timeout period. The gate-samples continue to fail and the deployment waits until the issues are fixed. Once the issues are fixed, the next sample from the gates becomes successful and the deployment automatically proceeds.
+## Summary
 
-If a new release is required to fix the issues, then we can cancel the deployment and manually abandon the current release.
+Gates ensures that the release waits for you to react to the feedback and fix any issues within a timeout period. The gate samples continue to fail and the deployment waits until the issues are fixed. Once the issues are fixed, the next sample from the gates becomes successful and the deployment automatically proceeds.
+
+If a new release is required to fix the issues, then you can cancel the deployment and manually abandon the current release.
 
 So here are release gates, enabling teams to release applications with higher confidence with fewer manual steps. There is now a built-in audit of all the necessary criteria for a deployment being met.    
